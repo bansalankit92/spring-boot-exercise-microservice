@@ -42,15 +42,19 @@ public class GitSearchResponseService {
     HttpHeaders headers = new HttpHeaders();
     headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
-    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(gitBaseUrl)
-        .queryParam(QUERY, CREATED_DATE + getYYYYMMDD(getLastLocalDate(lastDays)))
-        .queryParam(SORT_KEY, STARS)
-        .queryParam(ORDER_KEY, DESC)
-        .queryParam(PER_PAGE_LIMIT, noOfRepos);
+    UriComponentsBuilder builder = getUriComponentsBuilder(gitBaseUrl, noOfRepos, lastDays);
 
     return this.restTemplate.exchange(
         builder.build().toString(), HttpMethod.GET, new HttpEntity<>(headers),
         GitSearchResponse.class).getBody();
+  }
+
+  private UriComponentsBuilder getUriComponentsBuilder(String url, int noOfRepos, int lastDays) {
+    return UriComponentsBuilder.fromHttpUrl(url)
+          .queryParam(QUERY, CREATED_DATE + getYYYYMMDD(getLastLocalDate(lastDays)))
+          .queryParam(SORT_KEY, STARS)
+          .queryParam(ORDER_KEY, DESC)
+          .queryParam(PER_PAGE_LIMIT, noOfRepos);
   }
 
 }
